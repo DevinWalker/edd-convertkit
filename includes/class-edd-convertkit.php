@@ -267,8 +267,6 @@ class EDD_ConvertKit extends EDD_Newsletter {
 			}
 		}
 
-		$merge_vars = array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] );
-
 		$args = apply_filters( 'edd_convertkit_subscribe_vars', array(
 			'email' => $user_info['email'],
 			'name'  => $user_info['first_name'] . ' ' . $user_info['last_name']
