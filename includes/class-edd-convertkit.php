@@ -10,6 +10,7 @@
 class EDD_ConvertKit extends EDD_Newsletter {
 
 	public $api_key;
+	public $tags;
 
 	/**
 	 * Sets up the checkout label
@@ -63,6 +64,45 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	}
 
 	/**
+	 * Retrieve plugin tags
+	 */
+	public function get_tags() {
+
+		if( ! empty( $this->api_key ) ) {
+
+			$tags = get_transient( 'edd_convertkit_tag_data' );
+
+			if( false === $tags ) {
+
+				$request = wp_remote_get( 'https://api.convertkit.com/v3/tags?api_key=' . $this->api_key );
+
+				if( ! is_wp_error( $request ) && 200 == wp_remote_retrieve_response_code( $request ) ) {
+
+					$tags = json_decode( wp_remote_retrieve_body( $request ) );
+
+					set_transient( 'edd_convertkit_tag_data', $tags, 24*24*24 );
+
+				}
+
+			}
+
+			if( ! empty( $tags ) && ! empty( $tags->tags ) ) {
+
+				foreach( $tags->tags as $key => $tag ) {
+
+					$this->tags[ $tag->id ] = $tag->name;
+
+				}
+
+			}
+
+		}
+
+		return (array) $this->tags;
+
+	}
+
+	/**
 	 * Registers the plugin settings
 	 */
 	public function settings( $settings ) {
@@ -89,8 +129,8 @@ class EDD_ConvertKit extends EDD_Newsletter {
 			),
 			array(
 				'id'      => 'edd_convertkit_list',
-				'name'    => __( 'Choose a list', 'edda'),
-				'desc'    => __( 'Select the list you wish to subscribe buyers to', 'edd-convertkit' ),
+				'name'    => __( 'Choose a list', 'edd-convertkit'),
+				'desc'    => __( 'Select the list you wish to subscribe buyers to. The list can also be selected on a per-product basis from the product edit screen', 'edd-convertkit' ),
 				'type'    => 'select',
 				'options' => $this->get_lists()
 			),
@@ -100,12 +140,6 @@ class EDD_ConvertKit extends EDD_Newsletter {
 				'desc'    => __( 'This is the text shown next to the signup option', 'edd-convertkit' ),
 				'type'    => 'text',
 				'size'    => 'regular'
-			),
-			array(
-				'id'      => 'edd_convertkit_double_opt_in',
-				'name'    => __( 'Double Opt-In', 'edd-convertkit' ),
-				'desc'    => __( 'When checked, users will be sent a confirmation email after signing up, and will only be added once they have confirmed the subscription.', 'edd-convertkit' ),
-				'type'    => 'checkbox'
 			)
 		);
 
@@ -123,6 +157,47 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	}
 
 	/**
+	 * Display the metabox, which is a list of newsletter lists
+	 */
+	public function render_metabox() {
+
+		global $post;
+
+		echo '<p>' . __( 'Select the lists you wish buyers to be subscribed to when purchasing.', 'eddmc' ) . '</p>';
+
+		$checked = (array) get_post_meta( $post->ID, '_edd_' . esc_attr( $this->id ), true );
+		foreach( $this->get_lists() as $list_id => $list_name ) {
+			echo '<label>';
+				echo '<input type="checkbox" name="_edd_' . esc_attr( $this->id ) . '[]" value="' . esc_attr( $list_id ) . '"' . checked( true, in_array( $list_id, $checked ), false ) . '>';
+				echo '&nbsp;' . $list_name;
+			echo '</label><br/>';
+		}
+
+
+		$tags = $this->get_tags( $list_id );
+		if( ! empty( $tags ) ) {
+			$checked = (array) get_post_meta( $post->ID, '_edd_' . esc_attr( $this->id ) . '_tags', true );
+			echo '<p>' . __( 'Add the following tags to subscribers.', 'eddmc' ) . '</p>';
+			foreach ( $tags as $tag_id => $tag_name ){
+				echo '<label>';
+					echo '<input type="checkbox" name="_edd_' . esc_attr( $this->id ) . '_tags[]" value="' . esc_attr( $tag_id ) . '"' . checked( true, in_array( $tag_id, $checked ), false ) . '>';
+					echo '&nbsp;' . $tag_name;
+				echo '</label><br/>';
+			}
+		}
+	}
+
+	/**
+	 * Save the metabox
+	 */
+	public function save_metabox( $fields ) {
+
+		$fields[] = '_edd_' . esc_attr( $this->id );
+		$fields[] = '_edd_' . esc_attr( $this->id ) . '_tags';
+		return $fields;
+	}
+
+	/**
 	 * Determines if the checkout signup option should be displayed
 	 */
 	public function show_checkout_signup() {
@@ -132,9 +207,52 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	}
 
 	/**
+	 * Check if a customer needs to be subscribed on completed purchase of specific products
+	 */
+	public function completed_download_purchase_signup( $download_id = 0, $payment_id = 0, $download_type = 'default' ) {
+
+		$user_info = edd_get_payment_meta_user_info( $payment_id );
+		$lists     = get_post_meta( $download_id, '_edd_' . $this->id, true );
+		$tags      = get_post_meta( $download_id, '_edd_' . $this->id . '_tags', true );
+
+		if( 'bundle' == $download_type ) {
+
+			// Get the lists of all items included in the bundle
+
+			$downloads = edd_get_bundled_products( $download_id );
+			if( $downloads ) {
+				foreach( $downloads as $d_id ) {
+					$d_lists = get_post_meta( $d_id, '_edd_' . $this->id, true );
+					$d_tags = get_post_meta( $d_id, '_edd_' . $this->id . '_tags', true );
+					if ( is_array( $d_lists ) ) {
+						$lists = array_merge( $d_lists, (array) $lists );
+					}
+					if ( is_array( $d_tags ) ) {
+						$tags = array_merge( $d_tags, (array) $tags );
+					}
+				}
+			}
+		}
+
+		if( empty( $lists ) ) {
+			return;
+		}
+
+		$lists = array_unique( $lists );
+		$tags  = array_unique( $tags );
+
+		foreach( $lists as $list ) {
+
+			$this->subscribe_email( $user_info, $list, false, $tags );
+
+		}
+
+	}
+
+	/**
 	 * Subscribe an email to a list
 	 */
-	public function subscribe_email( $user_info = array(), $list_id = false, $opt_in_overridde = false ) {
+	public function subscribe_email( $user_info = array(), $list_id = false, $opt_in_overridde = false, $tags = array() ) {
 
 		// Make sure an API key has been entered
 		if( empty( $this->api_key ) ) {
@@ -148,8 +266,6 @@ class EDD_ConvertKit extends EDD_Newsletter {
 				return false;
 			}
 		}
-
-		$opt_in = edd_get_option( 'edd_convertkit_double_opt_in' ) && ! $opt_in_overridde;
 
 		$merge_vars = array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] );
 
@@ -167,6 +283,23 @@ class EDD_ConvertKit extends EDD_Newsletter {
 		);
 
 		if( ! is_wp_error( $request ) && 200 == wp_remote_retrieve_response_code( $request ) ) {
+
+			if( ! empty( $tags ) ) {
+
+				foreach( $tags as $tag ) {
+
+					$request = wp_remote_post(
+						'https://api.convertkit.com/v3/tags/' . $tag . '/subscribe?api_key=' . $this->api_key,
+						array(
+							'body'    => $args,
+							'timeout' => 15,
+						)
+					);
+
+				}
+
+			}
+
 			return true;
 		}
 
