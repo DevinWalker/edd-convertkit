@@ -25,6 +25,14 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	}
 
 	/**
+	 * Load the plugin's textdomain
+	 */
+	public function textdomain() {
+		// Load the translations
+		load_plugin_textdomain( 'edd-convertkit', false, EDD_CONVERTKIT_PATH . '/languages/' );
+	}
+
+	/**
 	 * Retrieves the lists from ConvertKit
 	 */
 	public function get_lists() {
