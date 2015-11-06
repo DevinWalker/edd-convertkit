@@ -4,9 +4,8 @@
  *
  * @copyright   Copyright (c) 2013, Pippin Williamson
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
- * @since       2.0
+ * @since       1.0
 */
-
 class EDD_ConvertKit extends EDD_Newsletter {
 
 	public $api_key;
@@ -129,8 +128,8 @@ class EDD_ConvertKit extends EDD_Newsletter {
 			),
 			array(
 				'id'      => 'edd_convertkit_list',
-				'name'    => __( 'Choose a list', 'edd-convertkit'),
-				'desc'    => __( 'Select the list you wish to subscribe buyers to. The list can also be selected on a per-product basis from the product edit screen', 'edd-convertkit' ),
+				'name'    => __( 'Choose a form', 'edd-convertkit'),
+				'desc'    => __( 'Select the form you wish to subscribe buyers to. The form can also be selected on a per-product basis from the product edit screen', 'edd-convertkit' ),
 				'type'    => 'select',
 				'options' => $this->get_lists()
 			),
@@ -163,7 +162,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 
 		global $post;
 
-		echo '<p>' . __( 'Select the lists you wish buyers to be subscribed to when purchasing.', 'eddmc' ) . '</p>';
+		echo '<p>' . __( 'Select the form you wish buyers to be subscribed to when purchasing.', 'edd-convertkit' ) . '</p>';
 
 		$checked = (array) get_post_meta( $post->ID, '_edd_' . esc_attr( $this->id ), true );
 		foreach( $this->get_lists() as $list_id => $list_name ) {
@@ -177,7 +176,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 		$tags = $this->get_tags( $list_id );
 		if( ! empty( $tags ) ) {
 			$checked = (array) get_post_meta( $post->ID, '_edd_' . esc_attr( $this->id ) . '_tags', true );
-			echo '<p>' . __( 'Add the following tags to subscribers.', 'eddmc' ) . '</p>';
+			echo '<p>' . __( 'Add the following tags to subscribers.', 'edd-convertkit' ) . '</p>';
 			foreach ( $tags as $tag_id => $tag_name ){
 				echo '<label>';
 					echo '<input type="checkbox" name="_edd_' . esc_attr( $this->id ) . '_tags[]" value="' . esc_attr( $tag_id ) . '"' . checked( true, in_array( $tag_id, $checked ), false ) . '>';
