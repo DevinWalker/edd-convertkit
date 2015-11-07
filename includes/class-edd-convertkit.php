@@ -159,6 +159,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	public function save_settings( $input ) {
 		if( isset( $input['edd_convertkit_api'] ) ) {
 			delete_transient( 'edd_convertkit_list_data' );
+			delete_transient( 'edd_convertkit_tag_data' );
 		}
 		return $input;
 	}
