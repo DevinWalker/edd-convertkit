@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - ConvertKit
 Plugin URL: http://easydigitaldownloads.com/extension/convertkit
 Description: Subscribe your customers to ConvertKit forms during purchase
-Version: 1.0
+Version: 1.0.1
 Author: EDD Team
 Author URI: http://easydigitaldownloads.com
 */
@@ -12,7 +12,7 @@ Author URI: http://easydigitaldownloads.com
 define( 'EDD_CONVERTKIT_PATH', dirname( __FILE__ ) );
 
 if ( class_exists( 'EDD_License' ) && is_admin() ) {
-  $edd_convert_kit_license = new EDD_License( __FILE__, 'ConvertKit', '1.0', 'EDD Team' );
+  $edd_convert_kit_license = new EDD_License( __FILE__, 'ConvertKit', '1.0.1', 'EDD Team' );
 }
 
 if( ! class_exists( 'EDD_Newsletter' ) ) {
