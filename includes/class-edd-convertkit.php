@@ -279,6 +279,8 @@ class EDD_ConvertKit extends EDD_Newsletter {
 			'email' => $user_info['email'],
 			'name'  => $user_info['first_name'] . ' ' . $user_info['last_name']
 		) );
+		
+		$return = false;
 
 		$request = wp_remote_post(
 			'https://api.convertkit.com/v3/forms/' . $list_id . '/subscribe?api_key=' . $this->api_key,
@@ -287,29 +289,32 @@ class EDD_ConvertKit extends EDD_Newsletter {
 				'timeout' => 30,
 			)
 		);
-
+		
 		if( ! is_wp_error( $request ) && 200 == wp_remote_retrieve_response_code( $request ) ) {
+			$return = true;	
+		}
 
-			if( ! empty( $tags ) ) {
+		if( ! empty( $tags ) ) {
 
-				foreach( $tags as $tag ) {
+			foreach( $tags as $tag ) {
 
-					$request = wp_remote_post(
-						'https://api.convertkit.com/v3/tags/' . $tag . '/subscribe?api_key=' . $this->api_key,
-						array(
-							'body'    => $args,
-							'timeout' => 15,
-						)
-					);
-
+				$request = wp_remote_post(
+					'https://api.convertkit.com/v3/tags/' . $tag . '/subscribe?api_key=' . $this->api_key,
+					array(
+						'body'    => $args,
+						'timeout' => 15,
+					)
+				);
+				
+				if( ! is_wp_error( $request ) && 200 == wp_remote_retrieve_response_code( $request ) ) {
+					$return = true;	
 				}
 
 			}
 
-			return true;
 		}
 
-		return false;
+		return $return;
 
 	}
 
