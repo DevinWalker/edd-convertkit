@@ -243,6 +243,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 		}
 
 		if( empty( $lists ) ) {
+			$this->subscribe_email( $user_info, false, false, $tags );
 			return;
 		}
 
