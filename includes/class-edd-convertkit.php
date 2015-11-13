@@ -268,7 +268,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 		}
 
 		// Retrieve the global list ID if none is provided
-		if( ! $list_id ) {
+		if( ! $list_id && empty( $tags ) ) {
 			$list_id = edd_get_option( 'edd_convertkit_list', false );
 			if( ! $list_id ) {
 				return false;
