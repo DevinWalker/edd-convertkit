@@ -221,7 +221,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 
 		$user_info = edd_get_payment_meta_user_info( $payment_id );
 		$lists     = get_post_meta( $download_id, '_edd_' . $this->id, true );
-		$tags      = get_post_meta( $download_id, '_edd_' . $this->id . '_tags', true );
+		$tags      = (array) get_post_meta( $download_id, '_edd_' . $this->id . '_tags', true );
 
 		if( 'bundle' == $download_type ) {
 

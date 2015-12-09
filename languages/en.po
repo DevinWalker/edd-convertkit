@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: Easy Digital Downloads - ConvertKit\n"
-"POT-Creation-Date: 2015-11-06 15:00-0600\n"
-"PO-Revision-Date: 2015-11-06 15:00-0600\n"
+"POT-Creation-Date: 2015-11-11 15:54-0600\n"
+"PO-Revision-Date: 2015-11-11 15:54-0600\n"
+"Last-Translator: Pippin Williamson <pippin@pippinsplugins.com>\n"
 "Language-Team: Pippin Williamson <pippin@pippinsplugins.com>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.6\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: edd-convertkit.php\n"
@@ -15,8 +17,6 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
 "_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"Last-Translator: Pippin Williamson <pippin@pippinsplugins.com>\n"
-"Language: en\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
@@ -66,11 +66,11 @@ msgstr ""
 msgid "This is the text shown next to the signup option"
 msgstr ""
 
-#: includes/class-edd-convertkit.php:173
+#: includes/class-edd-convertkit.php:174
 msgid "Select the form you wish buyers to be subscribed to when purchasing."
 msgstr ""
 
-#: includes/class-edd-convertkit.php:187
+#: includes/class-edd-convertkit.php:188
 msgid "Add the following tags to subscribers."
 msgstr ""
 
