@@ -16,6 +16,10 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	 */
 	public function init() {
 
+		if( ! function_exists( 'edd_get_option' ) ) {
+			return;
+		}
+
 		$this->checkout_label = edd_get_option( 'edd_convertkit_label', __( 'Signup for the newsletter', 'edd-convertkit' ) );
 
 		$this->api_key = edd_get_option( 'edd_convertkit_api', '' );
