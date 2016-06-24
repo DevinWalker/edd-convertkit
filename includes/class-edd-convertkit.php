@@ -133,7 +133,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	 * @return array           The subsections with Convertkit added
 	 */
 	function subsection( $sections ) {
-		$sections['convertkit'] = __( 'Convertkit', 'edd-convertkit' );
+		$sections['convertkit'] = __( 'ConvertKit', 'edd-convertkit' );
 		return $sections;
 	}
 
@@ -154,13 +154,17 @@ class EDD_ConvertKit extends EDD_Newsletter {
 				'name'    => __( 'ConvertKit API Key', 'edd-convertkit' ),
 				'desc'    => __( 'Enter your ConvertKit API key', 'edd-convertkit' ),
 				'type'    => 'text',
-				'size'    => 'regular'
+				'size'    => 'regular',
+				'tooltip_title' => __( 'API Key', 'edd-convertkit' ),
+				'tooltip_desc'  => __( 'This can be found in your ConvertKit account under the Account menu', 'edd-convertkit' )
 			),
 			array(
 				'id'      => 'edd_convertkit_show_checkout_signup',
 				'name'    => __( 'Show Signup on Checkout', 'edd-convertkit' ),
 				'desc'    => __( 'Allow customers to signup for the list selected below during checkout?', 'edd-convertkit' ),
-				'type'    => 'checkbox'
+				'type'    => 'checkbox',
+				'tooltip_title' => __( 'Signup on Checkout', 'edd-convertkit' ),
+				'tooltip_desc'  => __( 'If enabled, a checkbox will be shown on the checkout screen allowing customers to opt-into an email subscription. If not enabled, customers will be subscribed only if one or more Forms is selected from the Edit screen of the Download product(s) being purchased.', 'edd-convertkit' )
 			),
 			array(
 				'id'      => 'edd_convertkit_list',
