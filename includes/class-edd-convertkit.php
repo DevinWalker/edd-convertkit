@@ -8,7 +8,18 @@
 */
 class EDD_ConvertKit extends EDD_Newsletter {
 
+	/**
+	 * ConvertKit API Key
+	 *
+	 * @var string
+	 */
 	public $api_key;
+
+	/**
+	 * Convert kit account tags
+	 *
+	 * @var object
+	 */
 	public $tags;
 
 	/**
@@ -201,6 +212,8 @@ class EDD_ConvertKit extends EDD_Newsletter {
 
 	/**
 	 * Save the metabox
+	 *
+	 * @params array $fields
 	 */
 	public function save_metabox( $fields ) {
 
@@ -220,6 +233,10 @@ class EDD_ConvertKit extends EDD_Newsletter {
 
 	/**
 	 * Check if a customer needs to be subscribed on completed purchase of specific products
+	 *
+	 * @param int $download_id ID of purchased download
+	 * @param int $payment_id ID of payment
+	 * @param string $download_type Type of download
 	 */
 	public function completed_download_purchase_signup( $download_id = 0, $payment_id = 0, $download_type = 'default' ) {
 
@@ -263,6 +280,13 @@ class EDD_ConvertKit extends EDD_Newsletter {
 
 	/**
 	 * Subscribe an email to a list
+	 *
+	 * @param array $user_info User info as returned by edd_get_payment_meta_user_info()
+	 * @param bool|string $list_id Optional. ID of list to subscribe to. If false, the default, value saved in UI will be used.
+	 * @param bool $opt_in_overridde Not used
+	 * @param array $tags Optional. Optional. Array of tags to add to subscriber
+	 *
+	 * @return bool
 	 */
 	public function subscribe_email( $user_info = array(), $list_id = false, $opt_in_overridde = false, $tags = array() ) {
 
