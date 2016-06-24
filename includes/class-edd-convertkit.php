@@ -35,6 +35,7 @@ class EDD_ConvertKit extends EDD_Newsletter {
 
 		$this->api_key = edd_get_option( 'edd_convertkit_api', '' );
 
+		add_filter( 'edd_settings_sections_extensions', array( $this, 'subsection' ), 10, 1 );
 		add_filter( 'edd_settings_extensions_sanitize', array( $this, 'save_settings' ) );
 
 	}
@@ -125,6 +126,18 @@ class EDD_ConvertKit extends EDD_Newsletter {
 	}
 
 	/**
+	 * Register our subsection for EDD 2.5
+	 *
+	 * @since  1.0.3
+	 * @param  array $sections The subsections
+	 * @return array           The subsections with Convertkit added
+	 */
+	function subsection( $sections ) {
+		$sections['convertkit'] = __( 'Convertkit', 'edd-convertkit' );
+		return $sections;
+	}
+
+	/**
 	 * Registers the plugin settings
 	 */
 	public function settings( $settings ) {
@@ -164,6 +177,10 @@ class EDD_ConvertKit extends EDD_Newsletter {
 				'size'    => 'regular'
 			)
 		);
+
+		if ( version_compare( EDD_VERSION, 2.5, '>=' ) ) {
+			$edd_convertkit_settings = array( 'convertkit' => $edd_convertkit_settings );
+		}
 
 		return array_merge( $settings, $edd_convertkit_settings );
 	}
